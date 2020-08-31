@@ -57,7 +57,7 @@ class Grid(Environment):
       # register agent
       self.agents.append(thing)
     else:
-      # register thing
+      # register thing 2
       self.things.append(thing)
 
   def execute_action(self, agent, action):
