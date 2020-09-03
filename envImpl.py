@@ -11,7 +11,7 @@ import random
 TURN = 'Turn'
 ADVANCED = 'Advance'
 STAY = 'Stay'
- 
+
 class FixAgentLocation:
   def __init__(self, x = 0, y = 0, d = None):
     self.x = x
@@ -19,14 +19,25 @@ class FixAgentLocation:
     self.d = d
 
 class Grid(Environment):
+  printGrid = []
+
   def __init__(self, envType = 'FULLY', initialAgentLocation = None):
     super(Grid, self).__init__()
+    for i in range(25):
+      self.printGrid.append({"A":0,"G":0,"T":0})
     self.envType = envType
     self.MAX_WIDTH = self.MAX_HEIGHT = 5
     self.initialAgentLocation = initialAgentLocation
 
   def thing_classes(self):
     return [SimplyReflexAgent, Trap, Gold]  # List of classes that can go into environment
+
+  def __str__(self):
+    r = ""
+    for i in self.printGrid:
+      r += str(i)+"\n"
+
+    return r
 
   def percept(self, agent):
     things = self.things;
@@ -43,20 +54,27 @@ class Grid(Environment):
         for thing in things:
           if ((thing.location[0],thing.location[1]) not in percepts):
             things.remove(thing)
-          
+
     print(things)
     return things
 
   def add_thing(self, thing, location = None):
     # set random location if not provided
-    thing.location = location if location is not None else self.default_location(thing) 
+    thing.location = location if location is not None else self.default_location(thing)
+
+    print(thing.location)
     # if thing is instance of Agent
     if (isinstance(thing, Agent)):
+      self.printGrid[thing.location[0]*5 + thing.location[1]]["A"] += 1
       # initialize thing's perform
       thing.performance = 100
       # register agent
       self.agents.append(thing)
     else:
+      if (isinstance(thing,Gold)):
+        self.printGrid[thing.location[0]*5 + thing.location[1]]["G"] += 1
+      else:
+        self.printGrid[thing.location[0]*5 + thing.location[1]]["T"] += 1
       # register thing 2
       self.things.append(thing)
 
@@ -72,8 +90,8 @@ class Grid(Environment):
   # generatas a random location for the given thing
   def default_location(self, thing):
     # generate random x, y, and default direction
-    x = random.randint(0, self.MAX_WIDTH);
-    y = random.randint(0, self.MAX_HEIGHT);
+    x = random.randint(0, self.MAX_WIDTH - 1);
+    y = random.randint(0, self.MAX_HEIGHT - 1);
     d = Direction(Direction.R)
 
     # if initialAgentLocation is given and given thing is instance of agent
@@ -96,4 +114,3 @@ class Grid(Environment):
     if len(ores) > 0:
       self.delete_thing(ores[0])
       agent.modifyPerformance(10)
-
