@@ -3,7 +3,7 @@ from agents import Agent
 from agents import Direction
 from items import Gold
 from items import Trap
-from agentsImpl import SimplyReflexAgent
+from agentsImpl import SimpleReflexAgent
 
 
 import random
@@ -20,7 +20,7 @@ class FixAgentLocation:
 
 class Grid(Environment):
   printGrid = []
-
+  
   def __init__(self, envType = 'FULLY', initialAgentLocation = None):
     super(Grid, self).__init__()
     for i in range(25):
@@ -30,7 +30,7 @@ class Grid(Environment):
     self.initialAgentLocation = initialAgentLocation
 
   def thing_classes(self):
-    return [SimplyReflexAgent, Trap, Gold]  # List of classes that can go into environment
+    return [SimpleReflexAgent, Trap, Gold]  # List of classes that can go into environment
 
   def __str__(self):
     r = ""

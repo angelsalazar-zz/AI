@@ -1,7 +1,7 @@
 from agents import Agent
 from agents import Direction
 
-class SimplyReflexAgent(Agent):
+class SimpleReflexAgent(Agent):
 
   def modifyPerformance(self, amount):
     self.performance += amount
