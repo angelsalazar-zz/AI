@@ -6,19 +6,17 @@ from agents import Direction
 
 import random
 
+FIX_AGENT_LOCATION = (3, 4)
 grid = Grid()
 
 # adding Trap
 for i in range(random.randint(5, 8)):
   grid.add_thing(Trap())
 
-# adding Gold
+ # adding Gold
 for i in range(random.randint(5, 8)):
-  grid.add_thing(Gold())
+    grid.add_thing(Gold())
 
+grid.add_thing(createSimpleReflexAgent(), FIX_AGENT_LOCATION)
 
-# grid.add_thing(Gold(), (0,1))
-fixLocation = None
-grid.add_thing(createSimpleReflexAgent(), fixLocation)
-
-grid.run(10)
+grid.run(40)

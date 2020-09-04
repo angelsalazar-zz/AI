@@ -33,19 +33,20 @@ class Grid(Environment):
 
   def __str__(self):
     headers = (
-      '\t' + ('   %s       %s       %s       %s       %s' % (0,1,2,3,4)) + '\n' +
-      '\t' + '(A G T) (A G T) (A G T) (A G T) (A G T)' + '\n'
+      '     %s       %s       %s       %s       %s' % (0,1,2,3,4) + '\n' +
+      #('\t' + '%s       %s       %s       %s       %s' % (0,1,2,3,4)) + '\n' +
+      '  (A G T) (A G T) (A G T) (A G T) (A G T)' + '\n'
     )
     serialized = headers
 
     for i in range(5):
       serialized += (
-        str(i) + "\t" + 
-        self.printCell(self.state[0 + 5 * i]) + "\t" + 
-        self.printCell(self.state[1 + 5 * i]) + "\t" + 
-        self.printCell(self.state[2 + 5 * i]) + "\t" + 
-        self.printCell(self.state[3 + 5 * i]) + "\t" + 
-        self.printCell(self.state[4 + 5 * i]) + "\n"
+        str(i) + ' ' + 
+        self.printCell(self.state[0 + 5 * i]) + ' ' + 
+        self.printCell(self.state[1 + 5 * i]) + ' ' + 
+        self.printCell(self.state[2 + 5 * i]) + ' ' + 
+        self.printCell(self.state[3 + 5 * i]) + ' ' + 
+        self.printCell(self.state[4 + 5 * i]) + '\n'
       )
       
     return serialized
@@ -93,16 +94,17 @@ class Grid(Environment):
       self.things.append(thing)
 
   def execute_action(self, agent, action):
-    print('SELECTED ACTION: ' + action)
-    print('BEFORE-ACTION-START')
+    
+    print('SELECTED ACTION: ' + action + '\n')
+    print('BEFORE-ACTION-START \n')
     print(self)
-    print('BEFORE-ACTION-END')
+    print('BEFORE-ACTION-END \n')
 
     if action == TURN:
       agent.turn()
+      self.consumeThingsAtAgentLocation(agent)
     elif action == ADVANCED:
       previousLocation = agent.location
-
       if agent.forward():
         self.state[previousLocation[0] * 5 + previousLocation[1]]['A'] = 0
         self.state[agent.location[0] * 5 + agent.location[1]]['A'] = 1
@@ -111,9 +113,9 @@ class Grid(Environment):
     elif action == STAY:
       self.consumeThingsAtAgentLocation(agent)
     
-    print('AFTER-ACTION-START')
+    print('AFTER-ACTION-START \n')
     print(self)
-    print('AFTER-ACTION-END')
+    print('AFTER-ACTION-END \n')
 
   # generatas a random location for the given thing
   def default_location(self, thing):
@@ -125,21 +127,20 @@ class Grid(Environment):
   def consumeThingsAtAgentLocation(self, agent):
     ores = self.list_things_at(agent.location, Gold)
     traps = self.list_things_at(agent.location, Trap)
-    print('THINGS CURRENT LENGTH: ' + str(len(self.things)))
+    print('THINGS CURRENT LENGTH: ' + str(len(self.things)) + '\n')
 
     if len(ores) > 0:
       ore = ores[0]
-      print(ore)
       self.state[ore.location[0] * 5 + ore.location[1]]['G'] = self.state[ore.location[0] * 5 + ore.location[1]]['G'] - 1
       self.delete_thing(ore)
       agent.modifyPerformance(10)
-      print('GOLD DELETED')
-      print('THINGS NEW LENGTH: ' + str(len(self.things)))
+      print('GOLD DELETED \n')
+      print('THINGS NEW LENGTH: ' + str(len(self.things)) + '\n')
       
     if len(traps) > 0:
       trap = traps[0]
       self.state[trap.location[0] * 5 + trap.location[1]]['T'] = self.state[trap.location[0] * 5 + trap.location[1]]['T'] - 1
       self.delete_thing(traps[0])
       agent.modifyPerformance(-5)
-      print('TRAP DELETED')
-      print('THINGS NEW LENGTH: ' + str(len(self.things)))
+      print('TRAP DELETED \n')
+      print('THINGS NEW LENGTH: ' + str(len(self.things)) + '\n')

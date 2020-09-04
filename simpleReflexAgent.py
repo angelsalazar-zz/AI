@@ -81,18 +81,17 @@ def travel(origen, destino):
     else:
       return ADVANCED
 
-
   if origen[2] == Direction.D:
-    if origen[0] <= destino[0]:
+    if origen[0] < destino[0]:
       return ADVANCED
     else:
       return TURN
  
   if origen[2] == Direction.L:
-    if origen[1] < destino[1]:
+    if origen[1] <= destino[1]:
       return TURN
     else:
-     return ADVANCED
+        return ADVANCED
 
 class SimpleReflexAgent(Agent):
   def __init__(self, program):
@@ -130,18 +129,8 @@ class SimpleReflexAgent(Agent):
 
   def turn(self):
     self.modifyPerformance(-1)
-    # currentDir = self.currentDirection
-    
-    # if (currentDir.direction == Direction.U):
-    #   currentDir = currentDir + Direction.R
-    # elif (currentDir.direction == Direction.R):
-    #   currentDir = currentDir + Direction.D
-    # elif (currentDir.direction == Direction.D):
-    #   currentDir = currentDir + Direction.L
-    # elif (currentDir.direction == Direction.L):
-    #   currentDir = currentDir + Direction.U
-
     # update direction
+    # we can only turn clockwise
     self.currentDirection = self.currentDirection + Direction.R
 
   def forward(self):
@@ -151,7 +140,6 @@ class SimpleReflexAgent(Agent):
     if newLocation:
       self.location = newLocation
       return True
-      
     return False 
 
 
@@ -163,15 +151,24 @@ def createSimpleReflexAgent():
   def program(percepts):
     things, cells = percepts
     agentCurrentLocation = (agent.location[0], agent.location[1], agent.currentDirection.direction)
-
-    destino = rank(agentCurrentLocation, things)
+  
+    bestOption = rank(agentCurrentLocation, things)
     nextAction = ''
-    
-    if (agent.location[0] == destino.location[0] and agent.location[1] == destino.location[1]):
+    print('AGENT LOCATION: ' + str(agent.location) + '\n')
+    if bestOption:
+      print('BEST OPTION: ' + str(bestOption.location) + '\n')
+    else: 
+      print('BEST OPTION: None' + '\n')
+
+    if not bestOption:
+      nextAction = STAY
+      agent.alive = False
+    elif (agent.location[0] == bestOption.location[0] and agent.location[1] == bestOption.location[1]):
       nextAction = STAY
     else:
-      nextAction = travel(agentCurrentLocation, destino.location)
+      nextAction = travel(agentCurrentLocation, bestOption.location)
     return nextAction
   
   agent = SimpleReflexAgent(program)
+
   return agent
