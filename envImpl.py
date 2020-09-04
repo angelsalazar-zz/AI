@@ -137,7 +137,8 @@ class Grid(Environment):
       print('THINGS NEW LENGTH: ' + str(len(self.things)))
       
     if len(traps) > 0:
-      self.state[ore.location[0] * 5 + ore.location[1]]['T'] = self.state[ore.location[0] * 5 + ore.location[1]]['T'] - 1
+      trap = traps[0]
+      self.state[trap.location[0] * 5 + trap.location[1]]['T'] = self.state[trap.location[0] * 5 + trap.location[1]]['T'] - 1
       self.delete_thing(traps[0])
       agent.modifyPerformance(-5)
       print('TRAP DELETED')
