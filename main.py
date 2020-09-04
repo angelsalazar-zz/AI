@@ -1,13 +1,13 @@
 from envImpl import Grid
 from items import Gold
 from items import Trap
-from agentsImpl import SimpleReflexAgent
+from simpleReflexAgent import createSimpleReflexAgent
+from agents import Direction
 
 import random
 
 grid = Grid()
 
-print(grid)
 # adding Trap
 for i in range(random.randint(5, 8)):
   grid.add_thing(Trap())
@@ -16,8 +16,9 @@ for i in range(random.randint(5, 8)):
 for i in range(random.randint(5, 8)):
   grid.add_thing(Gold())
 
-grid.add_thing(SimpleReflexAgent())
 
-print('env things: ' + str(len(grid.things)))
-print('env agents: ' + str(len(grid.agents)))
-print(grid)
+# grid.add_thing(Gold(), (0,1))
+fixLocation = None
+grid.add_thing(createSimpleReflexAgent(), fixLocation)
+
+grid.run(10)
