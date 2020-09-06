@@ -65,6 +65,7 @@ class StateRenderer:
             self.printEnvironment(agent=agent)
             return
         
+        print(percepts)
         firstPercept = percepts[0]
         lastPercept = percepts[len(percepts) - 1]
         # special scenarios

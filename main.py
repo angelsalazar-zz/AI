@@ -24,4 +24,4 @@ for i in range(random.randint(4, 8)):
 agent = createModelReflexAgent()
 grid.add_thing(agent, FIX_AGENT_LOCATION)
 
-grid.run(4)
+grid.run(10)
