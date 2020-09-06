@@ -121,17 +121,13 @@ def createModelReflexAgent():
   def program(percepts):
     things, cells = percepts
     agent.visible.update(cells)
-    print("Visible:",agent.visible)
-    print("Visited:",agent.visited)
     agentCurrentLocation = (agent.location[0], agent.location[1], agent.currentDirection.direction)
 
     bestOption = rank(agentCurrentLocation, things, agent.visible-agent.visited)
     nextAction = ''
-    print('AGENT LOCATION: ' + str(agent.location) + '\n')
-    if bestOption:
-      print('BEST OPTION: ' + str(bestOption) + '\n')
-    else:
-      print('BEST OPTION: None' + '\n')
+
+    print('BEST OPTION')
+    print(bestOption)
 
     if not bestOption:
       nextAction = STAY

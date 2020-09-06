@@ -43,7 +43,13 @@ class Grid(Environment):
             percepts.append((i, j))
 
     if self.envType == PARTIALLY_OBSERVABLE:
-      movements = [(1,0),(1,1),(0,1),(-1,-1),(-1,0),(0,-1),(-1,1),(1,-1)]
+      # movements = [(1,0),(1,1),(0,1),(-1,-1),(-1,0),(0,-1),(-1,1),(1,-1)]      
+      movements = [
+        (-1, -1), (-1, 0),  (-1, 1),
+        ( 0, -1)         ,  ( 0, 1),
+        ( 1, -1), ( 1, 0),  ( 1, 1)
+      ]
+
       for m in movements:
         newX = agent.location[0] + m[0]
         newY = agent.location[1] + m[1]
@@ -55,9 +61,12 @@ class Grid(Environment):
             things.remove(thing)
 
     print(agent)       
-    self.stateRender.printEnvironment(agent=agent)
+    self.stateRender.printEnvironment(agent = agent)
     print('Agent performance: ' + (str(agent.performance)))
-    self.stateRender.printAgentPercept(agent = agent, things=things, percepts=percepts)
+    print('\n')
+    self.stateRender.printAgentPercept(agent = agent, percepts=percepts)
+    print('\n')
+
     return things, percepts
 
   def add_thing(self, thing, location = None):
@@ -69,6 +78,8 @@ class Grid(Environment):
       self.state[thing.location[0]*5 + thing.location[1]]["A"] += 1
       thing.performance = 100
       thing.currentDirection = Direction(randomDirection())
+      if (isinstance(thing, ModelReflexAgent)):
+        thing.visited.add(thing.location)
       self.agents.append(thing)
     else:
       if (isinstance(thing,Gold)):
@@ -81,7 +92,8 @@ class Grid(Environment):
     self.STEP_COUNT = self.STEP_COUNT + 1
     if isinstance(agent, ModelReflexAgent):
       self.stateRender.printAgentState(agent)
-    print('<Step> %s' % (self.STEP_COUNT))
+      print('\n')
+    print('<STEP %s>' % (self.STEP_COUNT))
     print('SELECT ACTION: %s' % (action))
     
     if action == TURN:
