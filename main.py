@@ -8,16 +8,16 @@ from agents import Direction
 import random
 
 FIX_AGENT_LOCATION = (3, 4)
-grid = Grid()
+grid = Grid(envType = "PARTIALLY")
 
 # adding Trap
-for i in range(random.randint(5, 8)):
+for i in range(random.randint(0, 0)):
   grid.add_thing(Trap())
 
  # adding Gold
-for i in range(random.randint(5, 8)):
+for i in range(random.randint(0, 0)):
     grid.add_thing(Gold())
 
 grid.add_thing(createModelReflexAgent(), FIX_AGENT_LOCATION)
 
-grid.run(40)
+grid.run(4)

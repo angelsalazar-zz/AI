@@ -41,25 +41,27 @@ class Grid(Environment):
 
     for i in range(5):
       serialized += (
-        str(i) + ' ' + 
-        self.printCell(self.state[0 + 5 * i]) + ' ' + 
-        self.printCell(self.state[1 + 5 * i]) + ' ' + 
-        self.printCell(self.state[2 + 5 * i]) + ' ' + 
-        self.printCell(self.state[3 + 5 * i]) + ' ' + 
+        str(i) + ' ' +
+        self.printCell(self.state[0 + 5 * i]) + ' ' +
+        self.printCell(self.state[1 + 5 * i]) + ' ' +
+        self.printCell(self.state[2 + 5 * i]) + ' ' +
+        self.printCell(self.state[3 + 5 * i]) + ' ' +
         self.printCell(self.state[4 + 5 * i]) + '\n'
       )
-      
+
     return serialized
 
   def percept(self, agent):
     things = self.things.copy()
     percepts = []
 
-    for i in range(5):
-      for j in range(5):
-        percepts.append((i, j))
+    if self.envType == "FULLY":
+        for i in range(5):
+          for j in range(5):
+            percepts.append((i, j))
 
     if self.envType == 'PARTIALLY':
+      print("PARTIALLY bby")
       movements = [(1,0),(1,1),(0,1),(-1,-1),(-1,0),(0,-1),(-1,1),(1,-1)]
       for m in movements:
         newX = agent.location[0] + m[0]
@@ -70,7 +72,7 @@ class Grid(Environment):
         for thing in things:
           if ((thing.location[0],thing.location[1]) not in percepts):
             things.remove(thing)
-
+            
     return things, percepts
 
   def add_thing(self, thing, location = None):
@@ -94,7 +96,7 @@ class Grid(Environment):
       self.things.append(thing)
 
   def execute_action(self, agent, action):
-    
+
     print('SELECTED ACTION: ' + action + '\n')
     print('BEFORE-ACTION-START \n')
     print(self)
@@ -112,7 +114,7 @@ class Grid(Environment):
       self.consumeThingsAtAgentLocation(agent)
     elif action == STAY:
       self.consumeThingsAtAgentLocation(agent)
-    
+
     print('AFTER-ACTION-START \n')
     print(self)
     print('AFTER-ACTION-END \n')
@@ -136,7 +138,7 @@ class Grid(Environment):
       agent.modifyPerformance(10)
       print('GOLD DELETED \n')
       print('THINGS NEW LENGTH: ' + str(len(self.things)) + '\n')
-      
+
     if len(traps) > 0:
       trap = traps[0]
       self.state[trap.location[0] * 5 + trap.location[1]]['T'] = self.state[trap.location[0] * 5 + trap.location[1]]['T'] - 1
