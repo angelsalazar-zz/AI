@@ -4,22 +4,9 @@ from items import Trap
 from allowActions import TURN
 from allowActions import ADVANCED
 from allowActions import STAY
-"""
-The result of executing an action is as follows:
-• The performance measure of the agent starts with 100 points.
-• Every Turn and Advance action reduce one point from the agent’s performance measure.
-• The Turn action changes the direction of the agent in clockwise, i.e. from Up to Right or
-from Right to Down or from Down to Left or from Left to Up.
-• The Advance action changes the agent location to the next cell in its current direction if it
-is not outside the grid. Trying to move outside the grid reduces its performance but
-maintains its location and direction.
-• Entering a previous visited cell cost the agent 2 points but staying in a cell does not cost.
-• Entering or staying in a cell containing gold pieces gives 10 points to the agent.
-• Entering or staying in a cell containing traps takes 5 points from the agent.
-• Getting a gold piece or falling in a trap remove these things from the environment.
-• Even when one cell contains multiple gold pieces or multiple traps, the agent entering or
-staying in that cell will be affected once by these things after executing each action.
-"""
+from baseReflexAgent import BaseReflexAgent
+from baseReflexAgent import travel
+
 
 def rankUnvisited(origen, notVisited):
   bestDestino = None
@@ -113,74 +100,11 @@ def rank(origen, destinos, notVisited):
   return bestDestino
 
 
-def travel(origen, destino):
-  if origen[2] == Direction.R:
-    if origen[1] < destino[1]:
-      return ADVANCED
-    else:
-      return TURN
 
-  if origen[2] == Direction.U:
-    if origen[0] <= destino[0]:
-      return TURN
-    else:
-      return ADVANCED
 
-  if origen[2] == Direction.D:
-    if origen[0] < destino[0]:
-      return ADVANCED
-    else:
-      return TURN
-
-  if origen[2] == Direction.L:
-    if origen[1] <= destino[1]:
-      return TURN
-    else:
-        return ADVANCED
-
-class ModelReflexAgent(Agent):
-
+class ModelReflexAgent(BaseReflexAgent):
   visited = set()
   visible = set()
-
-  def __init__(self, program):
-    super(ModelReflexAgent, self).__init__(program)
-    self.currentDirection = None
-
-  def __str__(self):
-    return '(%s, %s, %s)' % (
-      self.location[0],
-      self.location[1],
-      self.currentDirection.direction
-    )
-
-  def modifyPerformance(self, amount):
-    self.performance += amount
-
-  def checkBounds(self):
-    newX = self.location[0]
-    newY = self.location[1]
-    currentDir = self.currentDirection
-
-    if (currentDir.direction == Direction.U):
-      newX = self.location[0] - 1
-    elif (currentDir.direction == Direction.R):
-      newY = self.location[1] + 1
-    elif (currentDir.direction == Direction.D):
-      newX = self.location[0] + 1
-    elif (currentDir.direction == Direction.L):
-      newY = self.location[1] - 1
-
-    if newX < 0 or newY < 0 or newX >= 5 or newY >= 5:
-      return None
-    else:
-      return (newX,newY)
-
-  def turn(self):
-    self.modifyPerformance(-1)
-    # update direction
-    # we can only turn clockwise
-    self.currentDirection = self.currentDirection + Direction.R
 
   def forward(self):
     self.modifyPerformance(-1)

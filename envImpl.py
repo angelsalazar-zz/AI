@@ -10,11 +10,14 @@ from allowActions import STAY
 
 import random
 
+FULLY_OBSERVABLE = 'FULLY'
+PARTIALLY_OBSERVABLE = 'PARTIALLY'
+
 def randomDirection():
   return [Direction.R, Direction.D, Direction.L, Direction.U][random.randint(0, 3)]
 
 class Grid(Environment):
-  def __init__(self, envType = 'FULLY'):
+  def __init__(self, envType = FULLY_OBSERVABLE):
     super(Grid, self).__init__()
     self.state = []
     for i in range(25):
@@ -34,7 +37,6 @@ class Grid(Environment):
   def __str__(self):
     headers = (
       '     %s       %s       %s       %s       %s' % (0,1,2,3,4) + '\n' +
-      #('\t' + '%s       %s       %s       %s       %s' % (0,1,2,3,4)) + '\n' +
       '  (A G T) (A G T) (A G T) (A G T) (A G T)' + '\n'
     )
     serialized = headers
@@ -55,12 +57,12 @@ class Grid(Environment):
     things = self.things.copy()
     percepts = []
 
-    if self.envType == "FULLY":
+    if self.envType == FULLY_OBSERVABLE:
         for i in range(5):
           for j in range(5):
             percepts.append((i, j))
 
-    if self.envType == 'PARTIALLY':
+    if self.envType == PARTIALLY_OBSERVABLE:
       print("PARTIALLY bby")
       movements = [(1,0),(1,1),(0,1),(-1,-1),(-1,0),(0,-1),(-1,1),(1,-1)]
       for m in movements:
