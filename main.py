@@ -2,6 +2,7 @@ from envImpl import Grid
 from items import Gold
 from items import Trap
 from simpleReflexAgent import createSimpleReflexAgent
+from modelReflexAgent import createModelReflexAgent
 from agents import Direction
 
 import random
@@ -17,6 +18,6 @@ for i in range(random.randint(5, 8)):
 for i in range(random.randint(5, 8)):
     grid.add_thing(Gold())
 
-grid.add_thing(createSimpleReflexAgent(), FIX_AGENT_LOCATION)
+grid.add_thing(createModelReflexAgent(), FIX_AGENT_LOCATION)
 
 grid.run(40)
