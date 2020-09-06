@@ -43,7 +43,6 @@ class Grid(Environment):
             percepts.append((i, j))
 
     if self.envType == PARTIALLY_OBSERVABLE:
-      print("PARTIALLY bby")
       movements = [(1,0),(1,1),(0,1),(-1,-1),(-1,0),(0,-1),(-1,1),(1,-1)]
       for m in movements:
         newX = agent.location[0] + m[0]
@@ -68,17 +67,14 @@ class Grid(Environment):
     # if thing is instance of Agent
     if (isinstance(thing, Agent)):
       self.state[thing.location[0]*5 + thing.location[1]]["A"] += 1
-      # initialize thing's perform
       thing.performance = 100
       thing.currentDirection = Direction(randomDirection())
-      # register agent
       self.agents.append(thing)
     else:
       if (isinstance(thing,Gold)):
         self.state[thing.location[0]*5 + thing.location[1]]["G"] += 1
       else:
         self.state[thing.location[0]*5 + thing.location[1]]["T"] += 1
-      # register thing 2
       self.things.append(thing)
 
   def execute_action(self, agent, action):
@@ -101,7 +97,7 @@ class Grid(Environment):
     elif action == STAY:
       self.consumeThingsAtAgentLocation(agent)
 
-  # generatas a random location for the given thing
+  # generate a random location for the given thing
   def default_location(self, thing):
     # generate random x, y
     x = random.randint(0, self.MAX_WIDTH - 1)
@@ -111,23 +107,18 @@ class Grid(Environment):
   def consumeThingsAtAgentLocation(self, agent):
     ores = self.list_things_at(agent.location, Gold)
     traps = self.list_things_at(agent.location, Trap)
-    # print('THINGS CURRENT LENGTH: ' + str(len(self.things)) + '\n')
 
     if len(ores) > 0:
       ore = ores[0]
       self.state[ore.location[0] * 5 + ore.location[1]]['G'] = self.state[ore.location[0] * 5 + ore.location[1]]['G'] - 1
       self.delete_thing(ore)
       agent.modifyPerformance(10)
-      # print('GOLD DELETED \n')
-      # print('THINGS NEW LENGTH: ' + str(len(self.things)) + '\n')
 
     if len(traps) > 0:
       trap = traps[0]
       self.state[trap.location[0] * 5 + trap.location[1]]['T'] = self.state[trap.location[0] * 5 + trap.location[1]]['T'] - 1
       self.delete_thing(traps[0])
       agent.modifyPerformance(-5)
-      # print('TRAP DELETED \n')
-      # print('THINGS NEW LENGTH: ' + str(len(self.things)) + '\n')
 
   def isFullyObservable(self):
     return self.envType == FULLY_OBSERVABLE
