@@ -4,9 +4,11 @@ from agents import Direction
 from items import Gold
 from items import Trap
 from simpleReflexAgent import SimpleReflexAgent
+from modelReflexAgent import ModelReflexAgent
 from allowActions import TURN
 from allowActions import ADVANCED
 from allowActions import STAY
+from stateRender import StateRenderer
 
 import random
 
@@ -20,38 +22,16 @@ class Grid(Environment):
   def __init__(self, envType = FULLY_OBSERVABLE):
     super(Grid, self).__init__()
     self.state = []
-    for i in range(25):
+    self.STEP_COUNT = 0
+    self.stateRender = StateRenderer(self)
+    for _ in range(25):
       self.state.append({"A":0,"G":0,"T":0})
     self.envType = envType
     self.MAX_WIDTH = self.MAX_HEIGHT = 5
+    print('<STARTING>')
 
   def thing_classes(self):
-    return [SimpleReflexAgent, Trap, Gold]  # List of classes that can go into environment
-
-  def printCell(self, cell):
-    agentCount = self.agents[0].currentDirection.direction[0:1] if cell["A"] > 0 else '-'
-    goldCount = str(cell["G"]) if cell["G"] != 0 else "-"
-    trapCount = str(cell["T"]) if cell["T"] != 0 else "-"
-    return ('(%s %s %s)' % (agentCount, goldCount, trapCount))
-
-  def __str__(self):
-    headers = (
-      '     %s       %s       %s       %s       %s' % (0,1,2,3,4) + '\n' +
-      '  (A G T) (A G T) (A G T) (A G T) (A G T)' + '\n'
-    )
-    serialized = headers
-
-    for i in range(5):
-      serialized += (
-        str(i) + ' ' +
-        self.printCell(self.state[0 + 5 * i]) + ' ' +
-        self.printCell(self.state[1 + 5 * i]) + ' ' +
-        self.printCell(self.state[2 + 5 * i]) + ' ' +
-        self.printCell(self.state[3 + 5 * i]) + ' ' +
-        self.printCell(self.state[4 + 5 * i]) + '\n'
-      )
-
-    return serialized
+    return [ModelReflexAgent, SimpleReflexAgent, Trap, Gold]  # List of classes that can go into environment
 
   def percept(self, agent):
     things = self.things.copy()
@@ -74,7 +54,11 @@ class Grid(Environment):
         for thing in things:
           if ((thing.location[0],thing.location[1]) not in percepts):
             things.remove(thing)
-            
+
+    print(agent)       
+    self.stateRender.printEnvironment(agent=agent)
+    print('Agent performance: ' + (str(agent.performance)))
+    self.stateRender.printAgentPercept(agent = agent, things=things, percepts=percepts)
     return things, percepts
 
   def add_thing(self, thing, location = None):
@@ -98,12 +82,12 @@ class Grid(Environment):
       self.things.append(thing)
 
   def execute_action(self, agent, action):
-
-    print('SELECTED ACTION: ' + action + '\n')
-    print('BEFORE-ACTION-START \n')
-    print(self)
-    print('BEFORE-ACTION-END \n')
-
+    self.STEP_COUNT = self.STEP_COUNT + 1
+    if isinstance(agent, ModelReflexAgent):
+      self.stateRender.printAgentState(agent)
+    print('<Step> %s' % (self.STEP_COUNT))
+    print('SELECT ACTION: %s' % (action))
+    
     if action == TURN:
       agent.turn()
       self.consumeThingsAtAgentLocation(agent)
@@ -117,10 +101,6 @@ class Grid(Environment):
     elif action == STAY:
       self.consumeThingsAtAgentLocation(agent)
 
-    print('AFTER-ACTION-START \n')
-    print(self)
-    print('AFTER-ACTION-END \n')
-
   # generatas a random location for the given thing
   def default_location(self, thing):
     # generate random x, y
@@ -131,20 +111,23 @@ class Grid(Environment):
   def consumeThingsAtAgentLocation(self, agent):
     ores = self.list_things_at(agent.location, Gold)
     traps = self.list_things_at(agent.location, Trap)
-    print('THINGS CURRENT LENGTH: ' + str(len(self.things)) + '\n')
+    # print('THINGS CURRENT LENGTH: ' + str(len(self.things)) + '\n')
 
     if len(ores) > 0:
       ore = ores[0]
       self.state[ore.location[0] * 5 + ore.location[1]]['G'] = self.state[ore.location[0] * 5 + ore.location[1]]['G'] - 1
       self.delete_thing(ore)
       agent.modifyPerformance(10)
-      print('GOLD DELETED \n')
-      print('THINGS NEW LENGTH: ' + str(len(self.things)) + '\n')
+      # print('GOLD DELETED \n')
+      # print('THINGS NEW LENGTH: ' + str(len(self.things)) + '\n')
 
     if len(traps) > 0:
       trap = traps[0]
       self.state[trap.location[0] * 5 + trap.location[1]]['T'] = self.state[trap.location[0] * 5 + trap.location[1]]['T'] - 1
       self.delete_thing(traps[0])
       agent.modifyPerformance(-5)
-      print('TRAP DELETED \n')
-      print('THINGS NEW LENGTH: ' + str(len(self.things)) + '\n')
+      # print('TRAP DELETED \n')
+      # print('THINGS NEW LENGTH: ' + str(len(self.things)) + '\n')
+
+  def isFullyObservable(self):
+    return self.envType == FULLY_OBSERVABLE

@@ -38,10 +38,10 @@ class BaseReflexAgent(Agent):
         self.currentDirection = None
     
     def __str__(self):
-        return '(%s, %s, %s)' % (
-        self.location[0],
-        self.location[1],
-        self.currentDirection.direction
+        return 'Agent state: (%s, %s, %s)' % (
+          self.location[0],
+          self.location[1],
+          self.currentDirection.direction
         )
 
     def modifyPerformance(self, amount):

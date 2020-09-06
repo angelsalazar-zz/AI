@@ -6,6 +6,7 @@ from items import Trap
 from simpleReflexAgent import createSimpleReflexAgent
 from modelReflexAgent import createModelReflexAgent
 from agents import Direction
+from stateRender import StateRenderer
 
 import random
 
@@ -20,6 +21,10 @@ for i in range(random.randint(4, 8)):
 for i in range(random.randint(4, 8)):
     grid.add_thing(Gold())
 
-grid.add_thing(createModelReflexAgent(), FIX_AGENT_LOCATION)
+agent = createModelReflexAgent()
+grid.add_thing(agent, FIX_AGENT_LOCATION)
 
-grid.run(4)
+grid.run(1)
+# renderer = StateRenderer(env = grid)
+#renderer.printEnvironment(agent)
+# print(grid.percept(agent))

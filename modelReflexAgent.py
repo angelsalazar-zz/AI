@@ -7,7 +7,6 @@ from allowActions import STAY
 from baseReflexAgent import BaseReflexAgent
 from baseReflexAgent import travel
 
-
 def rankUnvisited(origen, notVisited):
   bestDestino = None
   bestSuma = 10000000
@@ -98,9 +97,6 @@ def rank(origen, destinos, notVisited):
     return rankUnvisited(origen,notVisited)
 
   return bestDestino
-
-
-
 
 class ModelReflexAgent(BaseReflexAgent):
   visited = set()
