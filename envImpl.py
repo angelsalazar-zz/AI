@@ -35,7 +35,7 @@ class Grid(Environment):
 
   def percept(self, agent):
     things = self.things.copy()
-    percepts = []
+    percepts = list(agent.visible)
 
     if self.envType == FULLY_OBSERVABLE:
         for i in range(5):
@@ -43,7 +43,7 @@ class Grid(Environment):
             percepts.append((i, j))
 
     if self.envType == PARTIALLY_OBSERVABLE:
-      # movements = [(1,0),(1,1),(0,1),(-1,-1),(-1,0),(0,-1),(-1,1),(1,-1)]      
+      # movements = [(1,0),(1,1),(0,1),(-1,-1),(-1,0),(0,-1),(-1,1),(1,-1)]
       movements = [
         (-1, -1), (-1, 0),  (-1, 1),
         ( 0, -1)         ,  ( 0, 1),
@@ -55,12 +55,18 @@ class Grid(Environment):
         newY = agent.location[1] + m[1]
         if newX < 5 and newX >= 0 and newY < 5 and newY >= 0:
           percepts.append((newX,newY))
+      percepts.append((agent.location[0],agent.location[1]))
 
-        for thing in things:
-          if ((thing.location[0],thing.location[1]) not in percepts):
-            things.remove(thing)
+      things_to_remove = []
 
-    print(agent)       
+      for thing in things:
+        if (thing.location not in percepts):
+          things_to_remove.append(thing)
+
+      for thing in things_to_remove:
+        things.remove(thing)
+
+    print(agent)
     self.stateRender.printEnvironment(agent = agent)
     print('Agent performance: ' + (str(agent.performance)))
     print('\n')
@@ -95,7 +101,7 @@ class Grid(Environment):
       print('\n')
     print('<STEP %s>' % (self.STEP_COUNT))
     print('SELECT ACTION: %s' % (action))
-    
+
     if action == TURN:
       agent.turn()
       self.consumeThingsAtAgentLocation(agent)
