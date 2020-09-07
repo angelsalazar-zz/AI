@@ -1,3 +1,9 @@
+# buildCell
+# gets a string of the given cell
+# @param {Map} cell ({A:Integer, G:Integer, T:Integer})
+# @param {Agent} agent
+# @param {String} mark (default -)
+# @return {String}
 def buildCell(cell, agent, mark = '-'):
     if mark == '?':
         return ('(%s %s %s)' % (mark, mark, mark))
@@ -14,7 +20,11 @@ def buildCell(cell, agent, mark = '-'):
 
     return ('(%s %s %s)' % (agentCount, goldCount, trapCount))
     
-
+# buildHeaders
+# build the state headers
+# @param {Integer} start column to start (default 0)
+# @param {Integer} end column to end (not inclusive, default 5)
+# @return {Tuple} (indexes:String, headers:String)
 def buildHeaders(start=0, end=5):
     indexes = []
     headerTmpl = '(A G T)'
@@ -28,13 +38,21 @@ def buildHeaders(start=0, end=5):
     return (' '.join(indexes)), (' '.join(headers))
 
 
-def toIndex(location):
-    pass
-
+# StateRenderer class
+# used to display the enviroment state, agent's internal state, and agent's percept
 class StateRenderer:
+    # initialize state renderer variables
+    # @param {Grid} env (required)
     def __init__(self, env = None):
         self.env = env
 
+    # render
+    # displays the enviroment state, agent's internal state, and agent's percept 
+    # @param {Tuple} startingPoint
+    # @param {Tuple} endPoint
+    # @param {Agent} agent
+    # @param {Function} visibilityChecker
+    # @retunr {Void}
     def render(self, startingPoint = (0, 0), endPoint = (4, 4), agent = None, visibilityChecker = None):
         offset = '  '
         indexes, headers = buildHeaders(startingPoint[1], endPoint[1] + 1)
@@ -53,10 +71,19 @@ class StateRenderer:
                 )
             matrix.append(str(row) + ' ' + (' '.join(cells)))
         print('\n'.join(matrix))
-        
+
+    # printEnvironment
+    # displays the enviroment state
+    # @param {Agent} agent
+    # @retunr {Void} 
     def printEnvironment(self, agent):
         self.render(agent = agent)
 
+    # printAgentPercept
+    # displays the agent's percept
+    # @param {Agent} agent
+    # @param {List<Tuple>} percepts
+    # @retunr {Void} 
     def printAgentPercept(self, agent, percepts):
         print('PERCEPT')
         # print enviroment and exiting early
@@ -79,7 +106,10 @@ class StateRenderer:
 
         self.render(startingPoint = firstPercept, endPoint = lastPercept, agent = agent)
         
-
+    # printAgentState
+    # displays the agent's internal state (Supported only for Model based reflex agents)
+    # @param {Agent} agent
+    # @retunr {Void} 
     def printAgentState(self, agent):
         def checkVisibility(coords):
             if agent.visited.intersection({coords}):

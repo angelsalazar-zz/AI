@@ -7,6 +7,12 @@ from allowActions import STAY
 from baseReflexAgent import BaseReflexAgent
 from baseReflexAgent import travel
 
+
+# rankUnvisited
+# gets the cells that requires the least amount steps to get reached
+# @param {Tuple} origen (row, col, direction)
+# @param {List<Tuple>} notVisited
+# @return {Tuple}
 def rankUnvisited(origen, notVisited):
   bestDestino = None
   bestSuma = 10000000
@@ -49,6 +55,12 @@ def rankUnvisited(origen, notVisited):
 
   return bestDestino
 
+# rank
+# gets the gold item that requires the least amount steps to get reached
+# @param {Tuple} origen (row, col, direction)
+# @param {List<Things>} destinos
+# @param {List<Tuple>} notVisited
+# @return {Thing}
 def rank(origen, destinos, notVisited):
   bestDestino = None
   bestSuma = 10000000
@@ -98,10 +110,20 @@ def rank(origen, destinos, notVisited):
 
   return bestDestino
 
+# SimpleReflexAgent
+# used to create instances of model based reflex agent
 class ModelReflexAgent(BaseReflexAgent):
+
+  # Model based reflex agent 
+  # internal state
   visited = set()
   visible = set()
-
+  
+  # forward
+  # returns true wether the agent was able to move
+  # if true, agent location changes and performance decreces by 1
+  # if false, agent location remains the same and performance decreces by 1
+  # @return {Boolean}
   def forward(self):
     self.modifyPerformance(-1)
     newLocation = self.checkBounds()
@@ -113,31 +135,40 @@ class ModelReflexAgent(BaseReflexAgent):
     return False
 
 
+# createModelReflexAgent
+# factory method that creates instances of model based reflex agent
+# @return {SimpleReflexAgent}
 def createModelReflexAgent():
   agent = None
 
-  # program can access variables declared
-  # in the scope of createSimpleReflexAgent
+  # program
+  # model based reflex agent's program
+  # @param {List<Things, List<Tuple>} percepts
+  # @return {String} action
   def program(percepts):
     things, cells = percepts
+    # update agent internal state
     agent.visible.update(cells)
     agentCurrentLocation = (agent.location[0], agent.location[1], agent.currentDirection.direction)
 
+    # computes the best option
     bestOption = rank(agentCurrentLocation, things, agent.visible-agent.visited)
     nextAction = ''
 
     print('BEST OPTION')
     print(bestOption)
 
+    # if no best option
+    # kill agent
     if not bestOption:
       nextAction = STAY
       agent.alive = False
-    elif (agent.location[0] == bestOption[0] and agent.location[1] == bestOption[1]):
-      nextAction = STAY
+    elif (agent.location[0] == bestOption[0] and agent.location[1] == bestOption[1]):   # if agent location and best option location are equal
+      nextAction = STAY                                                                 # set next action to STAY
     else:
-      nextAction = travel(agentCurrentLocation, bestOption)
+      nextAction = travel(agentCurrentLocation, bestOption)                             # else compute next action
     return nextAction
 
-  agent = ModelReflexAgent(program)
+  agent = ModelReflexAgent(program) # init ModelReflexAgent instance
 
   return agent
