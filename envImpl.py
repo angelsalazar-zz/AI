@@ -22,6 +22,12 @@ PARTIALLY_OBSERVABLE = 'PARTIALLY'
 def randomDirection():
   return [Direction.R, Direction.D, Direction.L, Direction.U][random.randint(0, 3)]
 
+def createVisitedChecker(agent): 
+  def checkVisibility(coords):
+    if agent.visited.intersection({coords}):
+        return 'V'
+    return '-'
+  return checkVisibility
 
 # Grid class
 # it is used to create fully and partially observable environments
@@ -52,7 +58,7 @@ class Grid(Environment):
   #                        percepts: list of visible cells
   def percept(self, agent):
     things = self.things.copy()                             # creating a copy of things
-    percepts = list(agent.visible)                          # list of cells that the agent can percept
+    percepts = []
 
     if self.envType == FULLY_OBSERVABLE:                    # if environment is fully observable
         for i in range(5):                                  # provide all cells as visible
@@ -71,7 +77,6 @@ class Grid(Environment):
         newY = agent.location[1] + m[1]                         # fill percepts list as visible cell
         if newX < 5 and newX >= 0 and newY < 5 and newY >= 0:   # only if they are in the bounding by the enviroment
           percepts.append((newX,newY))
-      percepts.append((agent.location[0],agent.location[1]))    # adds the agent location to the percepts
 
       things_to_remove = []                                     # init things_to_remove
 
@@ -85,7 +90,11 @@ class Grid(Environment):
     # printing agent current state
     print(agent)
     # printing enviroment state
-    self.stateRender.printEnvironment(agent = agent)
+    visibilityChecker = None
+    if isinstance(agent, ModelReflexAgent):
+      visibilityChecker = createVisitedChecker(agent)
+    
+    self.stateRender.printEnvironment(agent = agent, visibilityChecker = visibilityChecker)
     # printing agent performance
     print('Agent performance: ' + (str(agent.performance)))
     print('\n')

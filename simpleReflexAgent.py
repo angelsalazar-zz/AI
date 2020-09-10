@@ -92,12 +92,7 @@ def createSimpleReflexAgent():
     # computes the best option
     bestOption = rank(agentCurrentLocation, things)
     nextAction = ''
-    print('AGENT LOCATION: ' + str(agent.location) + '\n')
-    if bestOption:
-      print('BEST OPTION: ' + str(bestOption.location) + '\n')
-    else: 
-      print('BEST OPTION: None' + '\n')
-
+  
     # if no best option
     # kill agent
     if not bestOption:

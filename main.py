@@ -11,7 +11,7 @@ from stateRender import StateRenderer
 import random
 
 FIX_AGENT_LOCATION = (2, 2)
-grid = Grid(envType = PARTIALLY_OBSERVABLE)
+grid = Grid(envType = FULLY_OBSERVABLE)
 
 # adding Trap
 for i in range(random.randint(4, 8)):
@@ -21,7 +21,6 @@ for i in range(random.randint(4, 8)):
 for i in range(random.randint(4, 8)):
     grid.add_thing(Gold())
 
-agent = createModelReflexAgent()
-grid.add_thing(agent, FIX_AGENT_LOCATION)
+grid.add_thing(createModelReflexAgent(), FIX_AGENT_LOCATION)
 
 grid.run(10)

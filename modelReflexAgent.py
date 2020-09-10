@@ -131,6 +131,8 @@ class ModelReflexAgent(BaseReflexAgent):
     if newLocation:
       self.location = newLocation
       self.visited.add(newLocation)
+      if self.visited.intersection(newLocation):
+        self.modifyPerformance(-2)
       return True
     return False
 
@@ -154,9 +156,6 @@ def createModelReflexAgent():
     # computes the best option
     bestOption = rank(agentCurrentLocation, things, agent.visible-agent.visited)
     nextAction = ''
-
-    print('BEST OPTION')
-    print(bestOption)
 
     # if no best option
     # kill agent

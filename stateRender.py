@@ -76,8 +76,8 @@ class StateRenderer:
     # displays the enviroment state
     # @param {Agent} agent
     # @retunr {Void} 
-    def printEnvironment(self, agent):
-        self.render(agent = agent)
+    def printEnvironment(self, agent, visibilityChecker = None):
+        self.render(agent = agent, visibilityChecker = visibilityChecker)
 
     # printAgentPercept
     # displays the agent's percept
@@ -91,8 +91,7 @@ class StateRenderer:
         if self.env.isFullyObservable():
             self.printEnvironment(agent=agent)
             return
-        
-        print(percepts)
+    
         firstPercept = percepts[0]
         lastPercept = percepts[len(percepts) - 1]
         # special scenarios
