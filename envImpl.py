@@ -119,6 +119,8 @@ class Grid(Environment):
       thing.performance = 100                                                   # set agent performance
       thing.currentDirection = Direction(randomDirection())                     # set agent direction
       if (isinstance(thing, ModelReflexAgent)):                                 # if agent is a ModelReflexAgent
+        thing.visited = set()
+        thing.visible = set()
         thing.visited.add(thing.location)                                       # add current location as visited
       self.agents.append(thing)                                                 # register agent
     else:
