@@ -113,12 +113,6 @@ def rank(origen, destinos, notVisited):
 # SimpleReflexAgent
 # used to create instances of model based reflex agent
 class ModelReflexAgent(BaseReflexAgent):
-
-  # Model based reflex agent 
-  # internal state
-  visited = set()
-  visible = set()
-  
   # forward
   # returns true wether the agent was able to move
   # if true, agent location changes and performance decreces by 1
